@@ -1,6 +1,6 @@
-import { ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/solid'
-import Link from 'next/link'
-import React from 'react'
+import FormInput from '@/components/form-input'
+import FormButton from '@/components/form-btn'
+import SocialLoign from '@/components/soial-login'
 
 export default function createAcount() {
   return (
@@ -10,28 +10,14 @@ export default function createAcount() {
             <h2 className='text-xl'>Fill in the form below to join!</h2>
         </div>
         <form className='flex flex-col gap-3'>
-            <div className='flex flex-col gap-2'>  
-                <input 
-                    type="text" 
-                    placeholder='Username' 
-                    required
-                    className='px-2 bg-transparent rounded-md w-full h-10 focus:outline-none ring-1 focus:ring-2 ring-neutral-200 focus:ring-orange-500 border-none placeholder:text-neutral-400'
-                />
-                <span className='text-red-500 font-medium'>Input error</span>
-            </div>
-            <button className='primary-btn h-10'>Create Account</button>
+            <FormInput type="text" placehoder='UserName' required={true} errors={['user name is short']}/>
+            <FormInput type="email" placehoder='Email' required={true} errors={['Eamil is short']}/>
+            <FormInput type="password" placehoder='Password' required={true} errors={['password name is short']}/>
+            <FormInput type="password" placehoder='Confirm password' required={true} errors={['password name is short']}/>
+            <FormButton loading={false} text="Create Account" />
         </form>
-        <div className='w-full h-px bg-neutral-500'/>
-        <div>
-            <Link className='primary-btn flex h-10 items-center justify-center gap-3' href="/sms">
-                <span>
-                    <ChatBubbleOvalLeftEllipsisIcon
-                    className='h-6 w-6'
-                    />
-                </span>
-                <span>Sing up With SMS</span>
-            </Link>
-        </div>
+        <SocialLoign/>
+
     </div>
   )
 }

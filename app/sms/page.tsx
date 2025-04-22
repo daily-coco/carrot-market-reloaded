@@ -10,8 +10,8 @@ export default function SMS() {
             <h2 className='text-xl'>Verify your phone numer.</h2>
         </div>
         <form className='flex flex-col gap-3'>
-            <FormInput type="number" placehoder='Phone Number' required={true} errors={['']}/>
-            <FormInput type="number" placehoder='Verification code' required={true} errors={['']}/>
+            <FormInput type="number"  name="inputSMS" placehoder='Phone Number' required={true} errors={['']}/>
+            <FormInput type="number"  name="inputSMSChk" placehoder='Verification code' required={true} errors={['']}/>
             <FormButton loading={false} text="Verify" />
         </form>
     </div>

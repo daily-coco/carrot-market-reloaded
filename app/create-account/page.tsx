@@ -10,10 +10,10 @@ export default function createAcount() {
             <h2 className='text-xl'>Fill in the form below to join!</h2>
         </div>
         <form className='flex flex-col gap-3'>
-            <FormInput type="text" placehoder='UserName' required={true} errors={['user name is short']}/>
-            <FormInput type="email" placehoder='Email' required={true} errors={['Eamil is short']}/>
-            <FormInput type="password" placehoder='Password' required={true} errors={['password name is short']}/>
-            <FormInput type="password" placehoder='Confirm password' required={true} errors={['password name is short']}/>
+            <FormInput type="text" name="formAcccountName" placehoder='UserName' required={true} errors={['user name is short']}/>
+            <FormInput type="email" name="formAcccountEamail" placehoder='Email' required={true} errors={['Eamil is short']}/>
+            <FormInput type="password" name="formAccountPw" placehoder='Password' required={true} errors={['password name is short']}/>
+            <FormInput type="password" name="formAccountPwChk" placehoder='Confirm password' required={true} errors={['password name is short']}/>
             <FormButton loading={false} text="Create Account" />
         </form>
         <SocialLoign/>

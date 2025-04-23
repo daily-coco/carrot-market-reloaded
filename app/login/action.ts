@@ -1,7 +1,7 @@
 "use server";
 
 //const handleForm = async(data:FormData) => {
-export async function handleForm(data:FormData) { 
+export async function handleForm(prevState:any,formData:FormData) { 
     // console.log(data.get("formEmail"), data.get("formPassword"))
     // console.log("i run in the Server baby!!")
 
@@ -10,6 +10,6 @@ export async function handleForm(data:FormData) {
     // redirect("/");
 
     return {
-        error:'wrong password'
+        errors:['wrong password']
     }
 } 

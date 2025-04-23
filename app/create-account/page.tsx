@@ -5,8 +5,9 @@ import Button from '@/components/button';
 import SocialLoign from '@/components/soial-login';
 import { useFormState } from 'react-dom';
 import { createAccount } from './actions';
+import { PASSWORD_MIN_LENGTH } from '@/lib/constants';
 
-export default function createAcountForm() {
+export default function CreateAcountForm() {
   const [state, action] = useFormState(createAccount, null);
   return (
     <div className='flex flex-col gap-10 py-8 px-6'>
@@ -36,7 +37,7 @@ export default function createAcountForm() {
           name='formAccountPw'
           placeholder='Password'
           required={true}
-          minLength={4}
+          minLength={PASSWORD_MIN_LENGTH}
           errors={state?.fieldErrors.formAccountPw}
         />
         <Input
@@ -44,7 +45,7 @@ export default function createAcountForm() {
           name='formAccountPwChk'
           placeholder='Confirm password'
           required={true}
-          minLength={4}
+          minLength={PASSWORD_MIN_LENGTH}
           errors={state?.fieldErrors.formAccountPwChk}
         />
         <Button text='Create Account' />

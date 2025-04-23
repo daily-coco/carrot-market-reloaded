@@ -12,7 +12,7 @@ export default function Input({
   // type,
   // placeholder,
   // required,
-  name,
+  //name,
   errors = [],
   ...rest // input의 나머지 props 전부를 rest에 담기
 }: IInputProps & InputHTMLAttributes<HTMLInputElement>) {

@@ -13,12 +13,15 @@
 - **스타일링**: Tailwind CSS
 
 ## 설치 및 실행 방법
-```bash
-# 저장소 클론
+```
+// # 저장소 클론
 git clone [repository-url]
 npx create-next-app@14
-// icon
+// # 라이브러리 설치 
 npm install @heroicons/react
+npm i zod
+npm i validator
+npm i @types/validator
 ```
 
 ## 프로젝트 구조

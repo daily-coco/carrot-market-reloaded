@@ -1,4 +1,5 @@
 'use server';
+import { PASSWORD_MIN_LENGTH, PASSWORD_REGEX, PASSWORD_REGEX_ERROR } from '@/lib/constants';
 import { z } from 'zod';
 
 /*
@@ -23,9 +24,7 @@ const checkname = (formAcccountName: string) =>
   !formAcccountName.includes('cocoball');
 
 // 비밀번호 정규식 : 소문자,대문자,숫자, 특정 특수문자 일부를 모두 포함하고 있는지 검사
-const passwordRegex = new RegExp(
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*?[#?!@$%^&*-]).+$/
-);
+const passwordRegex = PASSWORD_REGEX;
 
 const checkpassword = ({
   formAccountPw,
@@ -42,23 +41,24 @@ const formSchema = z
         invalid_type_error: 'Username must be a string',
         required_error: 'Please enter userName',
       })
-      .min(3, 'password too short')
-      .max(10, 'The password can be up to 10 digits')
-      //데이터변환
+      // .min(3, 'password too short')
+      // .max(10, 'The password can be up to 10 digits')
+      // //데이터변환
       .toLowerCase()
       .trim() //유저가 시작과 끝에 공백을 넣었을 때를 대비해서 trim으로 앞,뒤 공백을 제거
       .transform((formAccountName) => `❤️${formAccountName}`)
       //필드별 데이터 유효성 검증 .refine
-      .refine((formAcccountName) => checkname, 'customer error'),
+      //.refine((formAcccountName) => checkname, 'customer error'),
+      ,
     formAcccountEamail: z.string().email().toLowerCase(),
     formAccountPw: z
       .string()
-      .min(4)
+      .min(PASSWORD_MIN_LENGTH)
       .regex(
         passwordRegex,
-        'Passwords must contain at least one UPPERCASE, lowercase, number and special characters #?!@$%^&*-'
+        PASSWORD_REGEX_ERROR
       ),
-    formAccountPwChk: z.string().min(10),
+    formAccountPwChk: z.string().min(PASSWORD_MIN_LENGTH),
   })
   .refine(checkpassword, {
     message: 'Both passwords should be the same!',

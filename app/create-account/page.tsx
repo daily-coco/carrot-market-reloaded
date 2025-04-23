@@ -1,23 +1,55 @@
-import FormInput from '@/components/form-input'
-import FormButton from '@/components/form-btn'
-import SocialLoign from '@/components/soial-login'
+'use client';
 
-export default function createAcount() {
+import Input from '@/components/input';
+import Button from '@/components/button';
+import SocialLoign from '@/components/soial-login';
+import { useFormState } from 'react-dom';
+import { createAccount } from './actions';
+
+export default function createAcountForm() {
+  const [state, action] = useFormState(createAccount, null);
   return (
     <div className='flex flex-col gap-10 py-8 px-6'>
-        <div className='flex flex-col gap-2 *:font-medium'>
-            <h1 className='text-2xl'>안녕하세요!</h1>
-            <h2 className='text-xl'>Fill in the form below to join!</h2>
-        </div>
-        <form className='flex flex-col gap-3'>
-            <FormInput type="text" name="formAcccountName" placehoder='UserName' required={true} errors={['user name is short']}/>
-            <FormInput type="email" name="formAcccountEamail" placehoder='Email' required={true} errors={['Eamil is short']}/>
-            <FormInput type="password" name="formAccountPw" placehoder='Password' required={true} errors={['password name is short']}/>
-            <FormInput type="password" name="formAccountPwChk" placehoder='Confirm password' required={true} errors={['password name is short']}/>
-            <FormButton loading={false} text="Create Account" />
-        </form>
-        <SocialLoign/>
-
+      <div className='flex flex-col gap-2 *:font-medium'>
+        <h1 className='text-2xl'>안녕하세요!</h1>
+        <h2 className='text-xl'>Fill in the form below to join!</h2>
+      </div>
+      <form action={action} className='flex flex-col gap-3'>
+        <Input
+          type='text'
+          name='formAcccountName'
+          placeholder='UserName'
+          required={true}
+          minLength={3}
+          maxLength={10}
+          errors={state?.fieldErrors.formAcccountName}
+        />
+        <Input
+          type='email'
+          name='formAcccountEamail'
+          placeholder='Email'
+          required={true}
+          errors={state?.fieldErrors.formAcccountEamail}
+        />
+        <Input
+          type='password'
+          name='formAccountPw'
+          placeholder='Password'
+          required={true}
+          minLength={4}
+          errors={state?.fieldErrors.formAccountPw}
+        />
+        <Input
+          type='password'
+          name='formAccountPwChk'
+          placeholder='Confirm password'
+          required={true}
+          minLength={4}
+          errors={state?.fieldErrors.formAccountPwChk}
+        />
+        <Button text='Create Account' />
+      </form>
+      <SocialLoign />
     </div>
-  )
+  );
 }

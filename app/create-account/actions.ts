@@ -1,5 +1,9 @@
 'use server';
-import { PASSWORD_MIN_LENGTH, PASSWORD_REGEX, PASSWORD_REGEX_ERROR } from '@/lib/constants';
+import {
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_REGEX,
+  PASSWORD_REGEX_ERROR,
+} from '@/lib/constants';
 import { z } from 'zod';
 
 /*
@@ -46,18 +50,14 @@ const formSchema = z
       // //데이터변환
       .toLowerCase()
       .trim() //유저가 시작과 끝에 공백을 넣었을 때를 대비해서 trim으로 앞,뒤 공백을 제거
-      .transform((formAccountName) => `❤️${formAccountName}`)
-      //필드별 데이터 유효성 검증 .refine
-      //.refine((formAcccountName) => checkname, 'customer error'),
-      ,
+      .transform((formAccountName) => `❤️${formAccountName}`),
+    //필드별 데이터 유효성 검증 .refine
+    //.refine((formAcccountName) => checkname, 'customer error'),
     formAcccountEamail: z.string().email().toLowerCase(),
     formAccountPw: z
       .string()
       .min(PASSWORD_MIN_LENGTH)
-      .regex(
-        passwordRegex,
-        PASSWORD_REGEX_ERROR
-      ),
+      .regex(passwordRegex, PASSWORD_REGEX_ERROR),
     formAccountPwChk: z.string().min(PASSWORD_MIN_LENGTH),
   })
   .refine(checkpassword, {

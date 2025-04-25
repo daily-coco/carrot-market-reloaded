@@ -56,25 +56,35 @@ chore: 빌드 프로세스, 패키지 매니저 설정 등 변경
 
 ```
 npm i zod
-// vaildation
-npm i validator
-npm i@types/validator
-
 // 최신 버전 (6.6.0 - 250424 기준 )
 npm i prisma
 npx prisma init
 
 //다운그레이 진행 시
 npm uninstall @prisma/client prisma
+
 npm install @prisma/client@5.10.0 prisma@5.10.0
-npx prisma generate
+npx prisma init
+
 
 // migration
 npx prisma migrate dev
 
 // Prisma Studio
 npx prisma studio
+
+//
+npm i bcrypt
+npm i @types/bcrypt
+
+npm i iron-session
 ```
+
+### 라이브러리
+
+🔥비밀번호 생성기
+1password password generator
+ㄴhttps://1password.com/password-generator
 
 ## 라이센스
 

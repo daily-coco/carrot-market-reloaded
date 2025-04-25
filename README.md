@@ -56,6 +56,10 @@ chore: 빌드 프로세스, 패키지 매니저 설정 등 변경
 
 ```
 npm i zod
+// vaildation
+npm i validator
+npm i@types/validator
+
 // 최신 버전 (6.6.0 - 250424 기준 )
 npm i prisma
 npx prisma init

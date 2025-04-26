@@ -4,8 +4,12 @@ import {
   PASSWORD_REGEX,
   PASSWORD_REGEX_ERROR,
 } from '@/lib/constants';
+import bcrypt from 'bcrypt';
 import db from '@/lib/db';
 import { z } from 'zod';
+import { getIronSession } from 'iron-session';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 /*
 username: z
@@ -117,6 +121,9 @@ const formSchema = z
 // const usernameSchema = z.string().min(5).max(10);
 
 export async function createAccount(prevState: any, formData: FormData) {
+  // cookie 테스트를 위한 쿠키 찍어보기
+  console.log(cookies());
+
   // form에서 모든 item을 가져와보자  = 유효성 검사하고 싶은 data Object
   const data = {
     formAcccountName: formData.get('formAcccountName'),
@@ -135,7 +142,7 @@ export async function createAccount(prevState: any, formData: FormData) {
   //   }
 
   //safeParse
-  const result = formSchema.safeParse(data); //safePars는 에러를 throw하지 않는다.
+  const result = await formSchema.safeParseAsync(data); //safePars는 에러를 throw하지 않는다.
   console.log(data);
   if (!result.success) {
     //console.log(result.error.flatten()); // 콘솔에서 에러를 볼 수도 있다.
@@ -145,9 +152,36 @@ export async function createAccount(prevState: any, formData: FormData) {
   } else {
     // result.data 안에는 검증된 데이터도 있고, 변환된 데이터도 있다.
     // console.log(result.data);
-    // hash password
-    // save the user to DB
-    // log the user in : 사용자가 데이터베이스에 저장되면 사용자를 로그인 시켜준다.
+
+    //#bcrypt :hash password
+    const hashedPassword = await bcrypt.hash(result.data.formAccountPw, 12);
+    console.log(hashedPassword);
+
+    //: save the user to DB
+    const user = await db.user.create({
+      data: {
+        username: result.data.formAcccountName,
+        email: result.data.formAcccountEamail,
+        password: hashedPassword,
+      },
+      select: {
+        id: true,
+      },
+    });
+    console.log(user);
+
+    //# iron-session : log the user in : 사용자가 데이터베이스에 저장되면 사용자를 로그인 시켜준다.
+    const cookie = await getIronSession(cookies(), {
+      cookieName: 'delicious-karrot',
+      password: process.env.COOKIE_PASSWORD!,
+    });
+
+    //@ts-ignore
+    cookie.id = user.id;
+    await cookie.save();
+
     // 사용자가 로그인하면 사용자를 /home으로 /redirect를 시켜준다.
+
+    redirect('/profile');
   }
 }

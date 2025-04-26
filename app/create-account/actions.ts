@@ -7,9 +7,8 @@ import {
 import bcrypt from 'bcrypt';
 import db from '@/lib/db';
 import { z } from 'zod';
-import { getIronSession } from 'iron-session';
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import getSession from '@/lib/session';
 
 /*
 username: z
@@ -43,48 +42,6 @@ const checkpassword = ({
   formAccountPwChk: string;
 }) => formAccountPw === formAccountPwChk;
 
-// Join1. 사용자가 입력한 이름을 사용하는 유저가 있는지 filter
-const checkUniqueUsername = async (formAcccountName: string) => {
-  // check if username is taken ::already exists (사용자 이름이 존재하지는지 확인)
-  const user = await db.user.findUnique({
-    // 정상적인 프로세스를 위해서는 반환값은 null이 되어야 다음 가입 step으로 진행 가능
-    where: {
-      username: formAcccountName,
-      // username, // 니꼬쌤 강의 기준 : 필드명이 같은 경우에는 자바스크립트 문법으로 username으로 축약이 가능함
-    },
-    select: {
-      // 데이터베이스에서 요청할 데이터를 결정할 수 있다.
-      // 기본적으로는 모든 user 데이터를 가져옴 그러기 때문에 사용하지 않을 데이터를 다 가져오는 것은 성능면에서 좋지 않음.
-      // db에서 데이터를 전송 받을 때 user를 찾지만, id만 정보 받아옴
-      id: true,
-    },
-  });
-  // if (user) {
-  //   // 조회된 사용자가 있는 경우
-  //   return false;
-  // } else {
-  //   // 조회된 사용자가 없는 경우
-  //   return true;
-  // }
-  // 위의 if문을 좀 더 간결하게 적을 수 있다.
-  return !Boolean(user);
-};
-
-// join2
-// email을 누가 사용하고 있는지도 확인
-const checkUniqueEmail = async (formAcccountEamail: string) => {
-  const user = await db.user.findUnique({
-    // 정상적인 프로세스를 위해서는 반환값은 null이 되어야 다음 가입 step으로 진행 가능
-    where: {
-      email: formAcccountEamail,
-    },
-    select: {
-      id: true,
-    },
-  });
-  return !Boolean(user);
-};
-
 const formSchema = z
   .object({
     formAcccountName: z
@@ -96,22 +53,61 @@ const formSchema = z
       // .max(10, 'The password can be up to 10 digits')
       // //데이터변환
       .toLowerCase()
-      .trim() //유저가 시작과 끝에 공백을 넣었을 때를 대비해서 trim으로 앞,뒤 공백을 제거
-      // .transform((formAccountName) => `❤️${formAccountName}`),
-      //필드별 데이터 유효성 검증 .refine
-      //.refine((formAcccountName) => checkname, 'customer error')
-      .refine(checkUniqueUsername, 'This username is already taken'),
-    formAcccountEamail: z
-      .string()
-      .email()
-      .toLowerCase()
-      .refine(
-        checkUniqueEmail,
-        'There is an account already registered with that email.'
-      ),
+      .trim(), //유저가 시작과 끝에 공백을 넣었을 때를 대비해서 trim으로 앞,뒤 공백을 제거
+    // .transform((formAccountName) => `❤️${formAccountName}`),
+    //필드별 데이터 유효성 검증 .refine
+    //.refine((formAcccountName) => checkname, 'customer error')
+    //.refine(checkUniqueUsername, 'This username is already taken'),
+    formAcccountEamail: z.string().email().toLowerCase(),
+    // .refine(
+    //   checkUniqueEmail,
+    //   'There is an account already registered with that email.'
+    // ),
     formAccountPw: z.string().min(PASSWORD_MIN_LENGTH),
     // .regex(passwordRegex, PASSWORD_REGEX_ERROR),
     formAccountPwChk: z.string().min(PASSWORD_MIN_LENGTH),
+  })
+  .superRefine(async ({ formAcccountName }, ctx) => {
+    const user = await db.user.findUnique({
+      where: {
+        username: formAcccountName,
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (user) {
+      //user = true 이면 아이디가 존재한다는 의미
+      ctx.addIssue({
+        // zod 유효성 검사에서 에러를 추가하는 방법이다.
+        code: 'custom', // 커스텀 : 오류 메시지를 커스텀 하는 부분임으로 custom으로 선택
+        message: 'This username is already taken',
+        path: ['username'], // 에러가 발생된 위치(filed)를 기재해준다. 만약, 기재되지 않는다면 formError로 노출이 된다.( 정확하게 Zod에서 에러가 어떤 필드에서 발생한지를 모르기 때문에)
+        fatal: true, // 이 에러가 치명적인 에러라고 지정
+      });
+      return z.NEVER;
+    }
+  })
+  .superRefine(async ({ formAcccountEamail }, ctx) => {
+    const user = await db.user.findUnique({
+      where: {
+        username: formAcccountEamail,
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (user) {
+      //user = true 이면 아이디가 존재한다는 의미
+      ctx.addIssue({
+        // zod 유효성 검사에서 에러를 추가하는 방법이다.
+        code: 'custom', // 커스텀 : 오류 메시지를 커스텀 하는 부분임으로 custom으로 선택
+        message: 'This email is already taken',
+        path: ['email'], // 에러가 발생된 위치(filed)를 기재해준다. 만약, 기재되지 않는다면 formError로 노출이 된다.( 정확하게 Zod에서 에러가 어떤 필드에서 발생한지를 모르기 때문에)
+        fatal: true, // 이 에러가 치명적인 에러라고 지정
+      });
+      return z.NEVER;
+    }
   })
   .refine(checkpassword, {
     message: 'Both passwords should be the same!',
@@ -122,7 +118,7 @@ const formSchema = z
 
 export async function createAccount(prevState: any, formData: FormData) {
   // cookie 테스트를 위한 쿠키 찍어보기
-  console.log(cookies());
+  // console.log(cookies());
 
   // form에서 모든 item을 가져와보자  = 유효성 검사하고 싶은 data Object
   const data = {
@@ -171,14 +167,14 @@ export async function createAccount(prevState: any, formData: FormData) {
     console.log(user);
 
     //# iron-session : log the user in : 사용자가 데이터베이스에 저장되면 사용자를 로그인 시켜준다.
-    const cookie = await getIronSession(cookies(), {
-      cookieName: 'delicious-karrot',
-      password: process.env.COOKIE_PASSWORD!,
-    });
-
-    //@ts-ignore
-    cookie.id = user.id;
-    await cookie.save();
+    // const cookie = await getIronSession(cookies(), {
+    //   cookieName: 'delicious-karrot',
+    //   password: process.env.COOKIE_PASSWORD!,
+    // });
+    //174-177 일부 코드 이동 : lib > session.ts
+    const session = await getSession();
+    session.id = user.id;
+    await session.save();
 
     // 사용자가 로그인하면 사용자를 /home으로 /redirect를 시켜준다.
 

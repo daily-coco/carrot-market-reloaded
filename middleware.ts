@@ -60,11 +60,11 @@ export async function middleware(request: NextRequest) {
       // publicOnlyUrls의 배열에 값이 없는
       // 즉, 로그아웃 상태를 뜻함
       return NextResponse.redirect(new URL('/', request.url));
-    } else {
-      //로그인된경우라면?
-      if (exists) {
-        return NextResponse.redirect(new URL('/product', request.url));
-      }
+    }
+  } else {
+    //로그인된경우라면?
+    if (exists) {
+      return NextResponse.redirect(new URL('/products', request.url));
     }
   }
 }

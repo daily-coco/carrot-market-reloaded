@@ -2,7 +2,7 @@ import { getIronSession } from 'iron-session';
 import { cookies } from 'next/headers';
 
 interface SessionContent {
-  id?: number; // sessiong에 id가 없을 수도 있기 때문에
+  id?: number;
 }
 
 export default function getSession() {

@@ -1,7 +1,14 @@
 'use client';
+<<<<<<< HEAD
 import { useEffect, useRef, useState } from 'react';
 import { InitialProducts } from '@/app/(tabs)/products/page';
 import ListProduct from './list-product';
+=======
+
+import { InitialProducts } from '@/app/(tabs)/products/page';
+import ListProduct from './list-product';
+import { useEffect, useRef, useState } from 'react';
+>>>>>>> 8bb48b553fef735d5582b5711dda5453116611b7
 import { getMoreProducts } from '@/app/(tabs)/products/actions';
 
 interface ProductListProps {
@@ -13,7 +20,10 @@ export default function ProductList({ initialProducts }: ProductListProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [isLastPage, setIsLastPage] = useState(false);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8bb48b553fef735d5582b5711dda5453116611b7
   const trigger = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -22,7 +32,10 @@ export default function ProductList({ initialProducts }: ProductListProps) {
         observer: IntersectionObserver
       ) => {
         const element = entries[0];
+<<<<<<< HEAD
         //console.log(entries[0].isIntersecting);
+=======
+>>>>>>> 8bb48b553fef735d5582b5711dda5453116611b7
         if (element.isIntersecting && trigger.current) {
           observer.unobserve(trigger.current);
           setIsLoading(true);
@@ -44,12 +57,9 @@ export default function ProductList({ initialProducts }: ProductListProps) {
       observer.observe(trigger.current);
     }
     return () => {
-      //user가 page를 떠날 때
       observer.disconnect();
     };
   }, [page]);
-  // page가 변경되면 바로 여기에 있는 useEffect 코드가 다시 실행되기 때문에
-
   return (
     <div className='p-5 flex flex-col gap-5'>
       {products.map((product) => (
@@ -58,8 +68,10 @@ export default function ProductList({ initialProducts }: ProductListProps) {
       {!isLastPage ? (
         <span
           ref={trigger}
-          style={{ marginTop: `${page + 1 * 300}vh` }}
-          className='mt-[300vh] mb-96 text-sm font-semibold bg-orange-500 w-fit mx-auto px-3 py-2 rounded-md hover:opacity-90 active:scale-95'
+          style={{
+            marginTop: `${page + 1 * 900}vh`,
+          }}
+          className='mb-96 text-sm font-semibold bg-orange-500 w-fit mx-auto px-3 py-2 rounded-md hover:opacity-90 active:scale-95'
         >
           {isLoading ? '로딩 중' : 'Load more'}
         </span>

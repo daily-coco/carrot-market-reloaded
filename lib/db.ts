@@ -81,6 +81,54 @@ async function test() {
       userId: true,
     },
   });
+  const product2 = await db.product.create({
+    data: {
+      title: '김밥',
+      price: 9999,
+      photo: '/gimbap.jpg',
+      description: '맛있는 김바바바밥바바바',
+      user: {
+        connect: {
+          id: 2,
+        },
+      },
+    },
+    select: {
+      id: true,
+      title: true,
+      price: true,
+      photo: true,
+      description: true,
+      created_at: true,
+      updated_at: true,
+      user: true,
+      userId: true,
+    },
+  });
+  const product3 = await db.product.create({
+    data: {
+      title: '오뎅',
+      price: 9999,
+      photo: '/odeng.jpg',
+      description: '맛있는 오데에에에엥',
+      user: {
+        connect: {
+          id: 2,
+        },
+      },
+    },
+    select: {
+      id: true,
+      title: true,
+      price: true,
+      photo: true,
+      description: true,
+      created_at: true,
+      updated_at: true,
+      user: true,
+      userId: true,
+    },
+  });
 
   //   //   const token = await db.sMSToken.create({
   //   //     data: {

@@ -4,7 +4,7 @@ import { formatToWon } from '@/lib/utils';
 import { UserIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 async function getIsOwner(userId: number) {
   const session = await getSession();
   if (session.id) {
@@ -34,6 +34,15 @@ async function getProduct(id: number) {
   return product;
 }
 
+// async function deleteProduct(id: number) {
+//   const product = await db.product.delete({
+//     where: {
+//       id,
+//     },
+//   });
+//   redirect('/products');
+// }
+
 export default async function ProductDetail({
   params,
 }: {
@@ -51,10 +60,15 @@ export default async function ProductDetail({
   return (
     <div>
       <div className='relative aspect-square'>
-        <Image fill src={product.photo} alt={product.title} />
+        <Image
+          fill
+          src={product.photo}
+          alt={product.title}
+          className='object-cover'
+        />
       </div>
       <div className='p-5 flex items-center gap-3 border-b border-neutral-700'>
-        <div className='size-10 rounded-full'>
+        <div className='size-10 overflow-hidden rounded-full'>
           {product.user.avatar !== null ? (
             <Image
               src={product.user.avatar}

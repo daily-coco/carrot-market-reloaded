@@ -6,10 +6,20 @@ import { PhotoIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 import { uploadProduct } from './actions';
 import { useFormState } from 'react-dom';
-
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { productSchema, ProductType } from './schema';
 export default function AddProduct() {
   const [preview, setPreview] = useState('');
-  const [photoId, setImageId] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ProductType>({
+    resolver: zodResolver(productSchema), //
+  });
+
+  const [file, setFile] = useState<File | null>(null);
 
   const onImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // console.log(event.target.files);
@@ -30,6 +40,7 @@ export default function AddProduct() {
     // 즉, 업로드한 파일은 브라우저의 메모리에 저장이 되어있고, 새로고침할 때까지는 메모리에 살아 있다.
 
     setPreview(url);
+    setFile(file);
   };
   // user가 form을 submit해서 Form의 action이 호출되면 const interceptAction 이 호출된다.
   // const interceptAction = (state, formData) => {};
@@ -53,9 +64,23 @@ export default function AddProduct() {
   // const [state, action] = useFormState(interceptAction, null);
 
   const [state, action] = useFormState(uploadProduct, null);
+  //onValid에 들어오는 data는 validation을 마친 데이터
+  // const onValid = (data: ProductType) => {};
+  // 즉, onValid 함수가 호출된다는 건. 데이터 validation을 마쳤다는 것. react hook form은 자동으로 validation된 데이터를 여기에 넣을 것이다.
+
+  // const onValid = async () => {
+  //   await onSubmit()
+  // };
+
   return (
     <div>
-      <form action={action} className='p-5 flex flex-col gap-5'>
+      <form
+        // action={onValid}
+        action={action}
+        // onSubmit={handleSubmit(onValid)} // form의 validation이 성공했을 때 호출할 함수(onValid)
+        // 🔥참고🔥 onValid는 validation이 끝난 데이터로 호출된다.
+        className='p-5 flex flex-col gap-5'
+      >
         <label
           htmlFor='photo'
           className='border-2 aspect-square flex items-center justify-center flex-col text-neutral-300 border-neutral-300 rounded-md border-dashed cursor-pointer bg-center bg-cover'
@@ -69,6 +94,7 @@ export default function AddProduct() {
               <div className='text-neutral-400 text-sm'>
                 사진을 추가해주세요.
                 {/* {state?.fieldErrors.photo} */}
+                {/* errors.photo?.message */}
               </div>
             </>
           ) : null}
@@ -82,25 +108,32 @@ export default function AddProduct() {
           className='hidden'
         />
         <Input
-          name='title'
+          // register를 통해서 name이 추가 됨에 따른 name 속성 삭제
+          // name='title'
           required
           placeholder='제목'
           type='text'
-          errors={state?.fieldErrors.title}
+          {...register('title')}
+          // errors={state?.fieldErrors.title}
+          errors={[errors.title?.message ?? '']} // react hook form의  error를 처리한 위한 설계가 없기 때문에 배열로 만들고 그 안에서 if문으로 값을 처리해주는 꼼수를 살짝 써준다!
         />
         <Input
-          name='price'
+          // name='price'
           type='number'
           required
           placeholder='가격'
-          errors={state?.fieldErrors.price}
+          {...register('price')}
+          // errors={state?.fieldErrors.price}
+          errors={[errors.price?.message ?? '']}
         />
         <Input
-          name='description'
+          // name='description'
           type='text'
           required
           placeholder='자세한 설명'
-          errors={state?.fieldErrors.description}
+          {...register('description')}
+          // errors={state?.fieldErrors.description}
+          errors={[errors.description?.message ?? '']}
         />
         <Button text='작성 완료' />
       </form>

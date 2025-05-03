@@ -66,6 +66,9 @@ npm uninstall @prisma/client prisma
 npm install @prisma/client@5.10.0 prisma@5.10.0
 npx prisma init
 
+//icon
+npm i heroicons
+
 
 // migration
 npx prisma migrate dev
@@ -78,6 +81,11 @@ npm i bcrypt
 npm i @types/bcrypt
 
 npm i iron-session
+
+
+//
+npm i react-hook-form
+npm i @hookform/resolvers
 ```
 
 ### 라이브러리

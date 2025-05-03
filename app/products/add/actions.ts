@@ -1,27 +1,12 @@
 'use server';
 
-import { z } from 'zod';
 import fs from 'fs/promises'; // fs : file system을 위한 것, Node.js 기본 라이브러리에 포함되어 있음.
 import db from '@/lib/db';
 import getSession from '@/lib/session';
 import { redirect } from 'next/navigation';
+import { productSchema } from './schema';
 
 // fs/promises : promises를 붙이는 이유는 async와 await를 사용하기 위해서임.
-
-const productSchema = z.object({
-  title: z.string({
-    required_error: 'title is required',
-  }),
-  photo: z.string({
-    required_error: 'photo is required',
-  }),
-  description: z.string({
-    required_error: 'description is required',
-  }),
-  price: z.coerce.number({
-    required_error: 'price is required',
-  }),
-});
 
 export async function uploadProduct(_: any, formData: FormData) {
   const data = {

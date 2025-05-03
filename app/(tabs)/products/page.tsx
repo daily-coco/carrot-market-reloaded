@@ -24,24 +24,17 @@ export type InitialProducts = Prisma.PromiseReturnType<
   typeof getInitialProducts
 >;
 
-export type InitialProducts = Prisma.PromiseReturnType<
-  typeof getInitialProducts
->;
-
 export default async function Products() {
   const initialProducts = await getInitialProducts();
   return (
     <div>
       <ProductList initialProducts={initialProducts} />
-<<<<<<< HEAD
-=======
       <Link
         href='/products/add'
         className='bg-orange-500 flex items-center justify-center rounded-full size-16 fixed bottom-24 right-8 text-white transition-colors hover:bg-orange-400'
       >
         <PlusIcon className='size-10' />
       </Link>
->>>>>>> 8bb48b553fef735d5582b5711dda5453116611b7
     </div>
   );
 }

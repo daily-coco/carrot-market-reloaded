@@ -1,14 +1,8 @@
 'use client';
-<<<<<<< HEAD
-import { useEffect, useRef, useState } from 'react';
-import { InitialProducts } from '@/app/(tabs)/products/page';
-import ListProduct from './list-product';
-=======
 
 import { InitialProducts } from '@/app/(tabs)/products/page';
 import ListProduct from './list-product';
 import { useEffect, useRef, useState } from 'react';
->>>>>>> 8bb48b553fef735d5582b5711dda5453116611b7
 import { getMoreProducts } from '@/app/(tabs)/products/actions';
 
 interface ProductListProps {
@@ -20,10 +14,6 @@ export default function ProductList({ initialProducts }: ProductListProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [isLastPage, setIsLastPage] = useState(false);
-<<<<<<< HEAD
-
-=======
->>>>>>> 8bb48b553fef735d5582b5711dda5453116611b7
   const trigger = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -32,10 +22,6 @@ export default function ProductList({ initialProducts }: ProductListProps) {
         observer: IntersectionObserver
       ) => {
         const element = entries[0];
-<<<<<<< HEAD
-        //console.log(entries[0].isIntersecting);
-=======
->>>>>>> 8bb48b553fef735d5582b5711dda5453116611b7
         if (element.isIntersecting && trigger.current) {
           observer.unobserve(trigger.current);
           setIsLoading(true);
